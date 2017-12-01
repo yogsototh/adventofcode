@@ -13,7 +13,6 @@ extra-source-files:
 library:
   source-dirs: src
   exposed-modules:
-  - Lib
   - Day1
   dependencies:
   - base >=4.7 && <5
@@ -29,6 +28,8 @@ executables:
     dependencies:
     - base
     - adventofcode
+    - protolude
+    - pretty
 tests:
   adventofcode-test:
     main: Spec.hs
