@@ -1,0 +1,45 @@
+name: adventofcode
+version: '0.1.0.0'
+synopsis: Solutions for adventofcode
+description: Please see the README on Github at <https://github.com/yogsototh/adventofcode#readme>
+category: Web
+author: Yann Esposito
+maintainer: yann.esposito@gmail.com
+copyright: ! 'Copyright: © 2017 Yann Esposito'
+license: BSD3
+github: yogsototh/adventofcode
+extra-source-files:
+- README.md
+library:
+  source-dirs: src
+  exposed-modules:
+  - Lib
+  - Day1
+  dependencies:
+  - base >=4.7 && <5
+  - protolude
+executables:
+  adventofcode-exe:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - adventofcode
+tests:
+  adventofcode-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - adventofcode
+    - tasty
+    - tasty-hunit
+    - HUnit
