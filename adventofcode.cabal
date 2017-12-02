@@ -29,11 +29,13 @@ library
       src
   exposed-modules:
       Day1
+      Day2
   other-modules:
       Paths_adventofcode
   build-depends:
       base >=4.7 && <5
     , protolude
+    , foldl
   default-language: Haskell2010
 
 executable adventofcode-exe

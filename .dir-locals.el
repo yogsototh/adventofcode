@@ -2,5 +2,6 @@
 ;;; For more information see (info "(emacs) Directory Variables")
 
 ((haskell-mode
-  (intero-targets "adventofcode:lib" "adventofcode:test:adventofcode-test")))
+  (intero-targets "adventofcode:lib" "adventofcode:exe:adventofcode-exe" "adventofcode:test:adventofcode-test")))
+
 

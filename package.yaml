@@ -14,9 +14,11 @@ library:
   source-dirs: src
   exposed-modules:
   - Day1
+  - Day2
   dependencies:
   - base >=4.7 && <5
   - protolude
+  - foldl
 executables:
   adventofcode-exe:
     main: Main.hs
