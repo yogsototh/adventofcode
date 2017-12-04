@@ -31,6 +31,7 @@ library
       Day1
       Day2
   other-modules:
+      Day3
       Paths_adventofcode
   build-depends:
       base >=4.7 && <5
