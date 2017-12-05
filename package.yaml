@@ -15,10 +15,13 @@ library:
   exposed-modules:
   - Day1
   - Day2
+  - Day3
   dependencies:
   - base >=4.7 && <5
   - protolude
+  - containers
   - foldl
+  - text
 executables:
   adventofcode-exe:
     main: Main.hs
