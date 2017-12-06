@@ -3,6 +3,9 @@ import Test.Tasty.HUnit
 
 import qualified Day1
 import qualified Day2
+import qualified Day5
+import qualified Day6
+import Control.Monad (when)
 
 main :: IO ()
 main = defaultMain $
@@ -28,5 +31,33 @@ main = defaultMain $
       Day2.solution1 [[5,1,9,5],[7,5,3],[2,4,6,8]] @?= 18
     ,  testCase "example problem 2" $
       Day2.solution2 [[5,9,2,8],[9,4,7,3],[3,8,6,5]] @?= 9
+    ]
+  , testGroup "Day 5"
+    [ testCaseSteps "example problem 1" $ \step -> do
+        step "Loading input"
+        input <- Day5.testArray
+        step "Running solution 1"
+        sol1 <- Day5.solution1 input
+        when (sol1 /= 5) (assertFailure "Should be 5 steps")
+    ,  testCaseSteps "example problem 2" $ \step -> do
+        step "Loading input"
+        input <- Day5.testArray
+        step "Running solution 2"
+        sol2 <- Day5.solution2 input
+        when (sol2 /= 10) (assertFailure "Day 6 solution 2 on the example should be 4")
+    ]
+  , testGroup "Day 6"
+    [ testCaseSteps "example problem 1" $ \step -> do
+        step "Loading input"
+        input <- Day6.testArray
+        step "Running solution 1"
+        sol1 <- Day6.solution1 input
+        when (sol1 /= 5) (assertFailure "Should be 5 steps")
+    ,  testCaseSteps "example problem 2" $ \step -> do
+        step "Loading input"
+        input <- Day6.testArray
+        step "Running solution 2"
+        sol2 <- Day6.solution2 input
+        when (sol2 /= 4) (assertFailure "Day 6 solution 2 on the example should be 4")
     ]
   ]
