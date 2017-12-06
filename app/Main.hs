@@ -24,6 +24,10 @@ main = do
   input5 <- Day5.parseInput
   sol5 <- Day5.solution2 input5
   showSol "Solution 2" (int sol5)
-  input6 <- Day6.parseInput
-  sol6 <- Day6.solution1 input6
-  showSol "Solution 1" (int sol6)
+  putText "Day 6:"
+  input6_1 <- Day6.parseInput
+  sol6_1 <- Day6.solution1 input6_1
+  showSol "Solution 1" (int sol6_1)
+  input6_2 <- Day6.parseInput
+  sol6_2 <- Day6.solution2 input6_2
+  showSol "Solution 2" (int sol6_2)

@@ -45,6 +45,19 @@ For example, imagine a scenario with only four memory banks:
 Given the initial block counts in your puzzle input,
 how many redistribution cycles must be completed before a configuration is
 produced that has been seen before?
+
+--- Part Two ---
+
+Out of curiosity, the debugger would also like to know the size of the loop:
+starting from a state that has already been seen, how many block redistribution
+cycles must be performed before that same state is seen again?
+
+In the example above, 2 4 1 2 is seen again after four cycles, and so the answer
+in that example would be 4.
+
+How many cycles are in the infinite loop that arises from the configuration in
+your puzzle input?
+
 |-}
 module Day6 where
 
@@ -75,7 +88,7 @@ nextBank arr bank = do
   return $ if bank == end then start else bank + 1
 
 oneSpread :: (Int,Int) -> Arr -> Int -> Int -> IO Arr
-oneSpread (start,end) arr currentBank nbBlocks = do
+oneSpread (start,end) arr currentBank nbBlocks =
   if nbBlocks == 0 then
     return arr
   else do
@@ -122,3 +135,33 @@ solution1 input =
       if isRepeated
         then return (n+1)
         else go arr newMemory (n+1)
+
+
+oneCycle2 :: [Int] -> Arr -> IO Bool
+oneCycle2 match arr = do
+  bank  <- findArgMaxBank arr
+  next  <- nextBank arr bank
+  nbBlocks <- Array.readArray arr bank
+  Array.writeArray arr bank 0
+  bounds <- Array.getBounds arr
+  newArr <- oneSpread bounds arr next nbBlocks
+  elems  <- Array.getElems newArr
+  return (elems == match)
+
+solution2 input =
+  go input Set.empty 0
+  where
+    go :: Arr -> Set [Int] -> Int -> IO Int
+    go arr memory n = do
+      (newMemory,isRepeated) <- oneCycle memory arr
+      if isRepeated
+        then do
+          elems <- Array.getElems arr
+          go2 elems arr 0
+        else go arr newMemory (n+1)
+    go2 :: [Int] -> Arr -> Int -> IO Int
+    go2 match arr n = do
+      isRepeated <- oneCycle2 match arr
+      if isRepeated
+        then return (n+1)
+        else go2 match arr (n+1)
