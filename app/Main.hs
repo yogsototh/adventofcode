@@ -6,6 +6,7 @@ import Protolude
 import Text.PrettyPrint hiding ((<>))
 
 import qualified Day1
+import qualified Day5
 
 showSol :: [Char] -> Doc -> IO ()
 showSol txt d = putText . toS . render $
@@ -15,5 +16,10 @@ showSol txt d = putText . toS . render $
 main :: IO ()
 main = do
   putText "Day 1:"
-  showSol "Solution 1" (int (Day1.solution1 Day1.ex1code))
-  showSol "Solution 2" (int (Day1.solution2 Day1.ex1code))
+  input1 <- Day1.ex1code
+  showSol "Solution 1" (int (Day1.solution1 input1))
+  showSol "Solution 2" (int (Day1.solution2 input1))
+  putText "Day 5:"
+  input5 <- Day5.parseInput
+  sol5 <- Day5.solution2 input5
+  showSol "Solution 2" (int sol5)
