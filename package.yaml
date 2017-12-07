@@ -26,6 +26,7 @@ library:
   - foldl
   - text
   - array
+  - parsec
 executables:
   adventofcode-exe:
     main: Main.hs

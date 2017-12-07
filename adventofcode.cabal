@@ -35,6 +35,7 @@ library
       Day5
       Day6
   other-modules:
+      Day7
       Paths_adventofcode
   build-depends:
       base >=4.7 && <5
@@ -43,6 +44,7 @@ library
     , foldl
     , text
     , array
+    , parsec
   default-language: Haskell2010
 
 executable adventofcode-exe
