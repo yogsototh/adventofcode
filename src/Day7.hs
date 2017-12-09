@@ -71,6 +71,36 @@ in front of you is much larger.)
 Before you're ready to help them, you need to make sure your information is
 correct. What is the name of the bottom program?
 
+--- Part Two ---
+
+The programs explain the situation: they can't get down. Rather, they could get
+down, if they weren't expending all of their energy trying to keep the tower
+balanced. Apparently, one program has the wrong weight, and until it's fixed,
+they're stuck here.
+
+For any program holding a disc, each program standing on that disc forms a
+sub-tower. Each of those sub-towers are supposed to be the same weight, or the
+disc itself isn't balanced. The weight of a tower is the sum of the weights of
+the programs in that tower.
+
+In the example above, this means that for ugml's disc to be balanced, gyxo,
+ebii, and jptl must all have the same weight, and they do: 61.
+
+However, for tknk to be balanced, each of the programs standing on its disc and
+all programs above it must each match. This means that the following sums must
+all be the same:
+
+ugml + (gyxo + ebii + jptl) = 68 + (61 + 61 + 61) = 251
+padx + (pbga + havc + qoyq) = 45 + (66 + 66 + 66) = 243
+fwft + (ktlj + cntj + xhth) = 72 + (57 + 57 + 57) = 243
+
+As you can see, tknk's disc is unbalanced: ugml's stack is heavier than the
+other two. Even though the nodes above ugml are balanced, ugml itself is too
+heavy: it needs to be 8 units lighter for its stack to weigh 243 and keep the
+towers balanced. If this change were made, its weight would be 60.
+
+Given that exactly one program is the wrong weight, what would its weight need
+to be to balance the entire tower?
 
 
 |-}
@@ -78,25 +108,26 @@ module Day7 where
 
 import           Protolude
 
-import qualified Data.Set as Set
+import qualified Data.Map.Strict as Map
 import           Text.Parsec
 
 data Node = Node { name   :: Text
                  , weight :: Int
-                 , sons :: [Text]
+                 , sons   :: [Text]
                  } deriving (Eq, Ord,Show)
-type Nodes = [Node]
+type Nodes = Map Text Node
 
 parseInput :: IO Nodes
 parseInput = do
   str <- readFile "inputs/day7.txt"
-  return $ either (const empty) identity (parseNodes str)
+  return $ either (const Map.empty) identity (parseNodes str)
 
 parseNodes :: Text -> Either ParseError Nodes
 parseNodes = parse nodes "Nodes"
 
 nodes :: Parsec Text () Nodes
 nodes = many1 parseNode
+  & fmap (Map.fromList . map (\n -> (name n,n)))
 
 int :: Parsec Text () Int
 int = do
@@ -132,3 +163,60 @@ testInput =  "pbga (66)\n\
              \ugml (68) -> gyxo, ebii, jptl\n\
              \gyxo (61)\n\
              \cntj (57)\n"
+
+testNodes :: Nodes
+testNodes = either (const Map.empty) identity (parseNodes testInput)
+
+fatherOf :: Nodes -> Text -> Maybe Node
+fatherOf nodes nodeName = Map.elems nodes
+  & filter (\n -> nodeName `elem` sons n)
+  & head
+
+rootOf :: Nodes -> Maybe Node
+rootOf nodes = go nodes (head (Map.elems nodes))
+  where
+    go :: Nodes -> Maybe Node -> Maybe Node
+    go nodes (Just node) = case fatherOf nodes (name node) of
+                             Just n  -> go nodes (Just n)
+                             Nothing -> Just node
+    go _ _ = Nothing
+
+data Tree a = TNode a [Tree a] deriving (Eq,Ord,Show)
+
+totalWeight :: Tree (a,Int) -> Int
+totalWeight (TNode (_,i) _) = i
+
+weightedNodes :: Nodes -> Maybe (Tree (Node,Int))
+weightedNodes nodes = fmap go (rootOf nodes)
+  where
+    go :: Node -> Tree (Node,Int)
+    go node =
+      let subtrees :: [Tree (Node,Int)]
+          subtrees = sons node
+                     & map (`Map.lookup` nodes)
+                     & sequenceA
+                     & maybe [] (map go)
+          sonweights = map totalWeight subtrees
+      in TNode (node,foldl' (+) (weight node) sonweights)
+                       subtrees
+
+histogram :: Ord a => [a] -> Map.Map a Int
+histogram xs = Map.fromListWith (+) $ zip xs (repeat 1)
+
+solution2 :: Nodes -> Maybe (Text,Int)
+solution2 nodes = do
+  tree <- weightedNodes nodes
+  go 0 tree
+  where
+    go :: Int -> Tree (Node,Int) -> Maybe (Text,Int)
+    go expectedWeight (TNode (n,nw) subtrees) =
+       let groupedSubWeight = histogram (map totalWeight subtrees)
+       in if Map.size groupedSubWeight /= 1
+             then do
+                  expW <- groupedSubWeight
+                            & Map.filter (/= 1)
+                            & Map.keys
+                            & head
+                  badSubtree <- filter ((/= expW) . totalWeight) subtrees & head
+                  go expW badSubtree
+             else return (name n, weight n - (nw - expectedWeight))

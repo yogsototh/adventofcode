@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -59,5 +61,13 @@ main = defaultMain $
         step "Running solution 2"
         sol2 <- Day6.solution2 input
         when (sol2 /= 4) (assertFailure "Day 6 solution 2 on the example should be 4")
+    ]
+  , testGroup "Day 7"
+    [ testCaseSteps "example problem 1" $ \step -> do
+        step "Loading test input"
+        input <- Day7.testNodes
+        step "Running solution 1"
+        sol1 <- Day7.rootOf input
+        when (sol1 /= "tknk") (assertFailure "The root should be tknk")
     ]
   ]
