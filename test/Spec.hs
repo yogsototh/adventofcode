@@ -2,13 +2,15 @@
 
 import Test.Tasty
 import Test.Tasty.HUnit
+import Control.Monad (when)
 
 import qualified Day1
 import qualified Day2
 import qualified Day5
 import qualified Day6
 import qualified Day7
-import Control.Monad (when)
+import qualified Day8
+
 
 main :: IO ()
 main = defaultMain $
@@ -71,5 +73,11 @@ main = defaultMain $
         when (sol1 /= "tknk") (assertFailure "The root should be tknk")
     , testCase "example on solution 2" $
        maybe 0 snd (Day7.solution2 Day7.testNodes) @?= 60
+    ]
+  , testGroup "Day 8"
+    [ testCase "example problem 1" $
+        Day8.solution1 Day8.testInstructions @?= 1
+    , testCase "example problem 1" $
+        Day8.solution2 Day8.testInstructions @?= 10
     ]
   ]
