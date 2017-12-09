@@ -19,6 +19,7 @@ library:
   - Day4
   - Day5
   - Day6
+  - Day7
   dependencies:
   - base >=4.7 && <5
   - protolude
@@ -40,6 +41,7 @@ executables:
     - adventofcode
     - protolude
     - pretty
+    - containers
 tests:
   adventofcode-test:
     main: Spec.hs
