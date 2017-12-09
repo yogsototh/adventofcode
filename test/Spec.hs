@@ -7,6 +7,7 @@ import qualified Day1
 import qualified Day2
 import qualified Day5
 import qualified Day6
+import qualified Day7
 import Control.Monad (when)
 
 main :: IO ()
@@ -64,10 +65,11 @@ main = defaultMain $
     ]
   , testGroup "Day 7"
     [ testCaseSteps "example problem 1" $ \step -> do
-        step "Loading test input"
-        input <- Day7.testNodes
         step "Running solution 1"
-        sol1 <- Day7.rootOf input
+        let input = Day7.testNodes
+        let sol1 = maybe "" Day7.name (Day7.rootOf input)
         when (sol1 /= "tknk") (assertFailure "The root should be tknk")
+    , testCase "example on solution 2" $
+       maybe 0 snd (Day7.solution2 Day7.testNodes) @?= 60
     ]
   ]
