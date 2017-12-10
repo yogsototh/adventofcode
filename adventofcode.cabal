@@ -37,6 +37,7 @@ library
       Day7
       Day8
       Day9
+      Day10
   other-modules:
       Paths_adventofcode
   build-depends:

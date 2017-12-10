@@ -131,7 +131,7 @@ parseGroups2 = runParser groups2 0 "Groups 2"
 groups2 :: Parsec Text Int Int
 groups2 = do
   c <- char '{'
-  (groups2 <|> garbage2) `sepBy` (char ',')
+  (groups2 <|> garbage2) `sepBy` char ','
   c <- char '}'
   getState
 

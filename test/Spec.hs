@@ -10,6 +10,7 @@ import qualified Day5
 import qualified Day6
 import qualified Day7
 import qualified Day8
+import qualified Day10
 
 
 main :: IO ()
@@ -79,5 +80,9 @@ main = defaultMain $
         Day8.solution1 Day8.testInstructions @?= 1
     , testCase "example problem 1" $
         Day8.solution2 Day8.testInstructions @?= 10
+    ]
+  , testGroup "Day 10"
+    [ testCase "example 1" $
+        Day10.solution1 Day10.testInput @?= 12
     ]
   ]

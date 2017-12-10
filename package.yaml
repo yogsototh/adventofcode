@@ -22,6 +22,7 @@ library:
   - Day7
   - Day8
   - Day9
+  - Day10
   dependencies:
   - base >=4.7 && <5
   - protolude
