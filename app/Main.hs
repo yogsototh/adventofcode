@@ -103,3 +103,5 @@ day10 = do
   putText "Day 10:"
   let sol1 = Day10.solution1 Day10.input
   showSol "Solution 1" (int sol1)
+  input2 <- Day10.parseInput2
+  showSol "Solution 2" (text (toS (Day10.solution2 input2)))

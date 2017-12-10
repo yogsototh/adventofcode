@@ -84,5 +84,13 @@ main = defaultMain $
   , testGroup "Day 10"
     [ testCase "example 1" $
         Day10.solution1 Day10.testInput @?= 12
+    , testCase "solution 2 empty" $
+        Day10.solution2 "" @?= "a2582a3a0e66e6e86e3812dcb672a272"
+    , testCase "solution 2 AoC 2017" $
+        Day10.solution2 "AoC 2017" @?= "33efeb34ea91902bb2f59c9920caa6cd"
+    , testCase "solution 2 1,2,3" $
+        Day10.solution2 "1,2,3" @?= "3efbe78a8d82f29979031a4aa0b16a9d"
+    , testCase "solution 2 1,2,4" $
+        Day10.solution2 "1,2,4" @?= "63960835bcdc130f0b66d7ff4f6a5a8e"
     ]
   ]

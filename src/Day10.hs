@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-|
 description:
 
@@ -141,8 +142,12 @@ module Day10 where
 
 import           Protolude
 
+import           Data.Char       (chr, ord)
+import           Data.List       (foldl1')
 import qualified Data.Map.Strict as Map
+import           Numeric         (showHex)
 import           Text.Parsec
+import qualified Data.Text as T
 
 testInput :: AppState
 testInput = mkAppState 5 [3,4,1,5]
@@ -153,11 +158,11 @@ input = mkAppState 256 [187,254,0,81,169,219,1,190,19,102,255,56,46,32,2,216]
 mkAppState :: Int -> [Int] -> AppState
 mkAppState n ls = AppState [0..(n-1)] n ls 0 0
 
-data AppState = AppState { lst :: [Int]
-                         , lstSize :: Int
-                         , lenghts :: [Int]
+data AppState = AppState { lst      :: [Int]
+                         , lstSize  :: Int
+                         , lengths  :: [Int]
                          , position :: Int
-                         , skip :: Int
+                         , skip     :: Int
                          } deriving (Show)
 
 oneStep :: AppState -> AppState
@@ -180,6 +185,45 @@ merge lst1 lst2 lst1Size lst2Size n =
 
 solution1 :: AppState -> Int
 solution1 appState =
-  if null (lenghts appState)
+  if null (lengths appState)
      then lst appState & take 2 & foldl' (*) 1
      else solution1 (oneStep appState)
+
+
+parseInput2 :: IO Text
+parseInput2 = T.strip <$> readFile "inputs/day10.txt"
+
+strToLengths :: Text -> [Int]
+strToLengths = (++ [17,31,73,47,23]) . map ord . toS
+
+oneRound :: AppState -> AppState
+oneRound appState =
+  if null (lengths appState)
+     then appState
+     else oneRound (oneStep appState)
+
+testInput2 :: Text
+testInput2 = "1,2,3"
+
+manyRounds :: AppState -> Int -> [Int] -> AppState
+manyRounds appState 0 _ = appState
+manyRounds appState nbRounds ls =
+  manyRounds (oneRound (appState { lengths = ls })) (nbRounds - 1) ls
+
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf n [] = []
+chunksOf n l  = take n l:chunksOf n (drop n l)
+
+solution2 :: Text -> [Char]
+solution2 input =
+  let ls = strToLengths input
+      initAppState = mkAppState 256 ls
+      finalAppState = manyRounds initAppState 64 ls
+      sparseHash :: [Word8]
+      sparseHash = lst finalAppState & map fromIntegral
+      denseHash = map (foldl1' xor) (chunksOf 16 sparseHash)
+  in concatMap toHex denseHash
+
+toHex :: Word8 -> [Char]
+toHex n = let s = n `showHex` "" in
+  if length s < 2 then '0':s else s
