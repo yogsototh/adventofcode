@@ -82,7 +82,7 @@ characters or the ! doing the canceling.
 How many non-canceled characters are within the garbage in your puzzle input?
 
 |-}
-module Day9 where
+module Day09 where
 
 import           Protolude hiding ((<|>),many)
 

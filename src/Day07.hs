@@ -104,7 +104,7 @@ to be to balance the entire tower?
 
 
 |-}
-module Day7 where
+module Day07 where
 
 import           Protolude
 

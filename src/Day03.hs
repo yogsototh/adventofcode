@@ -49,7 +49,7 @@ What is the first value written that is larger than your puzzle input?
 
 
 |-}
-module Day3 where
+module Day03 where
 
 import Protolude
 import qualified Control.Foldl as F

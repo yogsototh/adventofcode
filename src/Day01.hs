@@ -1,5 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-module Day1 where
+module Day01 where
 
 import Protolude
 

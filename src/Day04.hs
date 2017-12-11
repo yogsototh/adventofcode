@@ -34,7 +34,7 @@ oiii ioii iioi iiio is not valid - any of these words can be rearranged to form 
 Under this new system policy, how many passphrases are valid?
 
 |-}
-module Day4 where
+module Day04 where
 
 import Protolude
 import qualified Data.Text as Text

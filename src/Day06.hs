@@ -59,7 +59,7 @@ How many cycles are in the infinite loop that arises from the configuration in
 your puzzle input?
 
 |-}
-module Day6 where
+module Day06 where
 
 import           Protolude
 

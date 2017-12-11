@@ -45,7 +45,7 @@ In this example, the sum of the results would be 4 + 3 + 2 = 9.
 
 What is the sum of each row's result in your puzzle input?
 |-}
-module Day2 where
+module Day02 where
 
 import Protolude
 import qualified Control.Foldl as F

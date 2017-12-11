@@ -52,7 +52,7 @@ offset values after finding the exit are left as 2 3 2 3 -1.
 
 How many steps does it now take to reach the exit?
 |-}
-module Day5 where
+module Day05 where
 
 import           Protolude
 

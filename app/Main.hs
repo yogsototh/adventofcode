@@ -8,13 +8,13 @@ import Text.PrettyPrint hiding ((<>))
 import System.Environment (getArgs)
 import qualified Data.Map as Map
 
-import qualified Day1
-import qualified Day2
-import qualified Day5
-import qualified Day6
-import qualified Day7
-import qualified Day8
-import qualified Day9
+import qualified Day01
+import qualified Day02
+import qualified Day05
+import qualified Day06
+import qualified Day07
+import qualified Day08
+import qualified Day09
 import qualified Day10
 
 showSol :: [Char] -> Doc -> IO ()
@@ -29,73 +29,73 @@ main = do
             (Map.lookup args solutions)
 
 solutions :: Map [[Char]] (IO ())
-solutions = Map.fromList [(["1"], day1)
-                         ,(["2"], day2)
-                         ,(["5"], day5)
-                         ,(["6"], day6)
-                         ,(["7"], day7)
-                         ,(["8"], day8)
-                         ,(["9"], day9)
+solutions = Map.fromList [(["01"], day01)
+                         ,(["02"], day02)
+                         ,(["05"], day05)
+                         ,(["06"], day06)
+                         ,(["07"], day07)
+                         ,(["08"], day08)
+                         ,(["09"], day09)
                          ,(["10"], day10)
                          ]
 
-day1 :: IO ()
-day1 = do
-  putText "Day 1:"
-  input1 <- Day1.ex1code
-  showSol "Solution 1" (int (Day1.solution1 input1))
-  showSol "Solution 2" (int (Day1.solution2 input1))
+day01 :: IO ()
+day01 = do
+  putText "Day 01:"
+  input1 <- Day01.ex1code
+  showSol "Solution 1" (int (Day01.solution1 input1))
+  showSol "Solution 2" (int (Day01.solution2 input1))
 
-day2 :: IO ()
-day2 = do
-  putText "Day 2:"
-  input <- Day2.parseInput
-  let sol1 = maybe 0 Day2.solution1 input
+day02 :: IO ()
+day02 = do
+  putText "Day 02:"
+  input <- Day02.parseInput
+  let sol1 = maybe 0 Day02.solution1 input
   showSol "Solution 1" (integer sol1)
-  let sol2 = maybe 0 Day2.solution2 input
+  let sol2 = maybe 0 Day02.solution2 input
   showSol "Solution 2" (integer sol2)
 
-day5 :: IO ()
-day5 = do
-  putText "Day 5:"
-  input5 <- Day5.parseInput
-  sol5 <- Day5.solution2 input5
+day05 :: IO ()
+day05 = do
+  putText "Day 05:"
+  input5 <- Day05.parseInput
+  sol5 <- Day05.solution2 input5
   showSol "Solution 2" (int sol5)
 
-day6 :: IO ()
-day6 = do
-  putText "Day 6:"
-  input6_1 <- Day6.parseInput
-  sol6_1 <- Day6.solution1 input6_1
+day06 :: IO ()
+day06 = do
+  putText "Day 06:"
+  input6_1 <- Day06.parseInput
+  sol6_1 <- Day06.solution1 input6_1
   showSol "Solution 1" (int sol6_1)
-  input6_2 <- Day6.parseInput
-  sol6_2 <- Day6.solution2 input6_2
+  input6_2 <- Day06.parseInput
+  sol6_2 <- Day06.solution2 input6_2
   showSol "Solution 2" (int sol6_2)
 
-day7 :: IO ()
-day7 = do
-  putText "Day 7:"
-  input <- Day7.parseInput
-  let sol_1 = Day7.rootOf input
-  showSol "Solution 1" (text (toS (maybe "" Day7.name sol_1)))
-  let sol_2 = Day7.solution2 input
+day07 :: IO ()
+day07 = do
+  putText "Day 07:"
+  input <- Day07.parseInput
+  let sol_1 = Day07.rootOf input
+  showSol "Solution 1" (text (toS (maybe "" Day07.name sol_1)))
+  let sol_2 = Day07.solution2 input
   showSol "Solution 2" (int (maybe 0 snd sol_2))
 
-day8 :: IO ()
-day8 = do
-  putText "Day 8:"
-  input <- Day8.parseInput
-  let sol1 = Day8.solution1 input
+day08 :: IO ()
+day08 = do
+  putText "Day 08:"
+  input <- Day08.parseInput
+  let sol1 = Day08.solution1 input
   showSol "Solution 1" (int sol1)
-  let sol2 = Day8.solution2 input
+  let sol2 = Day08.solution2 input
   showSol "Solution 2" (int sol2)
 
-day9 :: IO ()
-day9 = do
-  putText "Day 9:"
-  sol1 <- Day9.solution1
+day09 :: IO ()
+day09 = do
+  putText "Day 09:"
+  sol1 <- Day09.solution1
   showSol "Solution 1" (int sol1)
-  sol2 <- Day9.solution2
+  sol2 <- Day09.solution2
   showSol "Solution 2" (int sol2)
 
 day10 :: IO ()

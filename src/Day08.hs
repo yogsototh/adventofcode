@@ -35,7 +35,7 @@ What is the largest value in any register after completing the instructions in
 your puzzle input?
 
 |-}
-module Day8 where
+module Day08 where
 
 import           Protolude hiding ((<|>),many)
 
