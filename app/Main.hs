@@ -16,6 +16,7 @@ import qualified Day07
 import qualified Day08
 import qualified Day09
 import qualified Day10
+import qualified Day11
 
 showSol :: [Char] -> Doc -> IO ()
 showSol txt d = putText . toS . render $
@@ -37,6 +38,7 @@ solutions = Map.fromList [(["01"], day01)
                          ,(["08"], day08)
                          ,(["09"], day09)
                          ,(["10"], day10)
+                         ,(["11"], day11)
                          ]
 
 day01 :: IO ()
@@ -105,3 +107,10 @@ day10 = do
   showSol "Solution 1" (int sol1)
   input2 <- Day10.parseInput2
   showSol "Solution 2" (text (toS (Day10.solution2 input2)))
+
+day11 :: IO ()
+day11 = do
+  putText "Day 11:"
+  input <- Day11.parseInput
+  let sol1 = Day11.solution1 input
+  showSol "Solution 1" (int sol1)

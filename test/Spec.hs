@@ -11,6 +11,7 @@ import qualified Day06
 import qualified Day07
 import qualified Day08
 import qualified Day10
+import qualified Day11
 
 
 main :: IO ()
@@ -92,5 +93,17 @@ main = defaultMain $
         Day10.solution2 "1,2,3" @?= "3efbe78a8d82f29979031a4aa0b16a9d"
     , testCase "solution 2 1,2,4" $
         Day10.solution2 "1,2,4" @?= "63960835bcdc130f0b66d7ff4f6a5a8e"
+    ]
+  , testGroup "Day 11"
+    [ testGroup "Solution 1"
+      [ testCase "Example 1" $
+          Day11.solution1 (Day11.parseTxt "ne,ne,ne") @?= 3
+      , testCase "Example 2" $
+         Day11.solution1 (Day11.parseTxt "ne,ne,sw,sw") @?= 0
+      , testCase "Example 3" $
+         Day11.solution1 (Day11.parseTxt "ne,ne,s,s") @?= 2
+      , testCase "Example 4" $
+         Day11.solution1 (Day11.parseTxt "se,sw,se,sw,sw") @?= 3
+      ]
     ]
   ]
