@@ -13,6 +13,7 @@ import qualified Day08
 import qualified Day10
 import qualified Day11
 import qualified Day12
+import qualified Day13
 
 main :: IO ()
 main = defaultMain $
@@ -116,4 +117,16 @@ main = defaultMain $
           fmap Day12.solution2 (Day12.parseTxt Day12.testTxt) @?= Just 2
       ]
     ]
-  ]
+   , testGroup "Day 13"
+    [ testGroup "Solution 1"
+      [ testCase "Example" $
+          fmap Day13.solution1
+               (fmap Day13.mkAppState
+                (Day13.parseTxt Day13.testInput)) @?= Just 24
+      ]
+    , testGroup "Solution 2"
+      [ testCase "Example" $
+          fmap Day13.solution2 (Day13.parseTxt Day13.testInput) @?= Just 10
+      ]
+    ]
+   ]

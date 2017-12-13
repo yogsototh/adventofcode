@@ -25,6 +25,7 @@ library:
   - Day10
   - Day11
   - Day12
+  - Day13
   dependencies:
   - base >=4.7 && <5
   - protolude
@@ -38,6 +39,7 @@ executables:
     main: Main.hs
     source-dirs: app
     ghc-options:
+    - -O2
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
@@ -52,6 +54,7 @@ tests:
     main: Spec.hs
     source-dirs: test
     ghc-options:
+    - -O2
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N

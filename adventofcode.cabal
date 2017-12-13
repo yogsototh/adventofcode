@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3f3cbe111f1f469760a75a30c1b54e4cf67cf5ca5a968c511d1e0fe4bac65a32
+-- hash: 454d3692225cbc9c59993888515dbf7f9c46a2d886ffebc91072c08157888c4d
 
 name:                adventofcode
 version:             0.1.0.0
@@ -42,6 +42,7 @@ library
       Day10
       Day11
       Day12
+      Day13
   other-modules:
       Paths_adventofcode
   build-depends:
@@ -58,7 +59,7 @@ executable adventofcode-exe
   hs-source-dirs:
       app
   main-is: Main.hs
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       adventofcode
     , base
@@ -82,5 +83,5 @@ test-suite adventofcode-test
     , tasty-hunit
   other-modules:
       Paths_adventofcode
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   default-language: Haskell2010
