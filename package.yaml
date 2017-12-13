@@ -59,6 +59,7 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
+    - protolude
     - base
     - adventofcode
     - tasty

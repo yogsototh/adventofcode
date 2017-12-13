@@ -84,15 +84,16 @@ How many non-canceled characters are within the garbage in your puzzle input?
 |-}
 module Day09 where
 
-import           Protolude hiding ((<|>),many)
+import           Protolude hiding ((<|>))
 
 import qualified Data.Map.Strict as Map
 import           Text.Parsec
 
-solution1 :: IO Int
-solution1 = do
-  str <- readFile "inputs/day9.txt"
-  return $ either (const 0) identity (parseGroups str)
+parseInput :: IO Text
+parseInput = readFile "inputs/day9.txt"
+
+solution1 :: Text -> Int
+solution1 str = either (const 0) identity (parseGroups str)
 
 parseGroups :: Text -> Either ParseError Int
 parseGroups = runParser groups (0,0) "Groups 1"
@@ -101,7 +102,7 @@ groups :: Parsec Text (Int,Int) Int
 groups = do
   c <- char '{'
   updateState (\(d,s) -> (d+1,s+d+1))
-  (groups <|> garbage) `sepBy` (char ',')
+  (groups <|> garbage) `sepBy` char ','
   c <- char '}'
   updateState (\(d,s) -> (d-1,s))
   fmap snd getState
@@ -119,11 +120,8 @@ garbage = do
         '!' -> anyChar >> endGarbage
         _ -> endGarbage
 
-
-solution2 :: IO Int
-solution2 = do
-  str <- readFile "inputs/day9.txt"
-  return $ either (const 0) identity (parseGroups2 str)
+solution2 :: Text -> Int
+solution2 txt = either (const 0) identity (parseGroups2 txt)
 
 parseGroups2 :: Text -> Either ParseError Int
 parseGroups2 = runParser groups2 0 "Groups 2"

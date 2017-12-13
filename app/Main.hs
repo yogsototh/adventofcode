@@ -10,6 +10,8 @@ import qualified Data.Map as Map
 
 import qualified Day01
 import qualified Day02
+import qualified Day03
+import qualified Day04
 import qualified Day05
 import qualified Day06
 import qualified Day07
@@ -34,6 +36,8 @@ main = do
 solutions :: Map [[Char]] (IO ())
 solutions = Map.fromList [(["01"], day01)
                          ,(["02"], day02)
+                         ,(["03"], day03)
+                         ,(["04"], day04)
                          ,(["05"], day05)
                          ,(["06"], day06)
                          ,(["07"], day07)
@@ -44,6 +48,12 @@ solutions = Map.fromList [(["01"], day01)
                          ,(["12"], day12)
                          ,(["13"], day13)
                          ]
+
+
+-- | Show ZERO in case of failure
+mint = int . fromMaybe 0
+-- | Show ZERO in case of failure
+minteger = integer . fromMaybe 0
 
 day01 :: IO ()
 day01 = do
@@ -60,6 +70,21 @@ day02 = do
   showSol "Solution 1" (integer sol1)
   let sol2 = maybe 0 Day02.solution2 input
   showSol "Solution 2" (integer sol2)
+
+day03 :: IO ()
+day03 = do
+  putText "Day 03:"
+  showSol "Solution 1" (minteger (Day03.solution1 Day03.input))
+  showSol "Solution 2" (minteger (Day03.solution2 (fromIntegral Day03.input)))
+
+day04 :: IO ()
+day04 = do
+  putText "Day 04:"
+  input <- Day04.parseInput
+  let sol1 = Day04.solution1 input
+  showSol "Solution 1" (int sol1)
+  let sol2 = Day04.solution2 input
+  showSol "Solution 2" (int sol2)
 
 day05 :: IO ()
 day05 = do
@@ -99,9 +124,10 @@ day08 = do
 day09 :: IO ()
 day09 = do
   putText "Day 09:"
-  sol1 <- Day09.solution1
+  input <- Day09.parseInput
+  let sol1 = Day09.solution1 input
   showSol "Solution 1" (int sol1)
-  sol2 <- Day09.solution2
+  let sol2 = Day09.solution2 input
   showSol "Solution 2" (int sol2)
 
 day10 :: IO ()

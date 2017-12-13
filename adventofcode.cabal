@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 454d3692225cbc9c59993888515dbf7f9c46a2d886ffebc91072c08157888c4d
+-- hash: ece24a6f206c14c1251a73fcaadfb901287003b3dc6bb86e59bb0df886d7d33d
 
 name:                adventofcode
 version:             0.1.0.0
@@ -79,6 +79,7 @@ test-suite adventofcode-test
       HUnit
     , adventofcode
     , base
+    , protolude
     , tasty
     , tasty-hunit
   other-modules:

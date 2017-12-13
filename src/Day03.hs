@@ -57,6 +57,7 @@ import qualified Control.Foldl as F
 import Data.List (words,lines)
 import qualified Data.Map as Map
 
+input :: Int
 input = 265149
 
 
@@ -78,11 +79,14 @@ block1 = [ (2,1,0)
          ]
 spiral = (1,0,0):concatMap (\n -> blocks (n+1) ((n+1)^2,n `div` 2,- (n `div` 2))) [0,2..]
 
+returnPathLength :: Int -> Maybe Integer
 returnPathLength i =
   drop (i - 1) spiral
   & head
   & fmap (\(_,x,y) -> abs x + abs y)
 
+solution1 :: Int -> Maybe Integer
+solution1 = returnPathLength
 
 -- Solution 2
 
@@ -95,7 +99,7 @@ spiralDebug = go Map.empty (0,0)
                  in (val,nextcoord,neigh):go nextspiral nextcoord
 spiral2 = map (\(x,_,_) -> x) spiralDebug
 
-solution2 = head $ dropWhile (< 265149) spiral2
+solution2 input = head $ dropWhile (< input) spiral2
 
 neighbor :: Spiral -> (Int,Int) -> [Maybe Integer]
 neighbor spiral (x,y) =

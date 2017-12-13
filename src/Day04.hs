@@ -40,9 +40,10 @@ import Protolude
 import qualified Data.Text as Text
 
 parseInput :: IO [[Text]]
-parseInput = do
-  inputTxt <- readFile "inputs/day4.txt"
-  return $ inputTxt & Text.lines & map Text.words
+parseInput = parseTxt <$> readFile "inputs/day4.txt"
+
+parseTxt :: Text -> [[Text]]
+parseTxt txt = txt & Text.lines & map Text.words
 
 allUniq :: Eq a => [a] -> Bool
 allUniq [] = True
