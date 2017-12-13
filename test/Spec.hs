@@ -32,29 +32,10 @@ main = defaultMain $
   , testDay08
   , testDay09
   , testDay10
-  , testGroup "Day 12"
-    [ testGroup "Solution 1"
-      [ testCase "Example" $
-          fmap Day12.solution1 (Day12.parseTxt Day12.testTxt) @?= Just 6
-      ]
-    , testGroup "Solution 2"
-      [ testCase "Example" $
-          fmap Day12.solution2 (Day12.parseTxt Day12.testTxt) @?= Just 2
-      ]
-    ]
-   , testGroup "Day 13"
-    [ testGroup "Solution 1"
-      [ testCase "Example" $
-          (Day13.solution1 . Day13.mkAppState)
-          <$> Day13.parseTxt Day13.testInput
-          @?= Just 24
-      ]
-    , testGroup "Solution 2"
-      [ testCase "Example" $
-          fmap Day13.solution2 (Day13.parseTxt Day13.testInput) @?= Just 10
-      ]
-    ]
-   ]
+  , testDay11
+  , testDay12
+  , testDay13
+  ]
 
 testDay01 =
   testGroup "Day 1"
@@ -75,10 +56,13 @@ testDay01 =
 
 testDay02 =
   testGroup "Day 2"
-  [ testCase "example problem 1" $
-    Day02.solution1 [[5,1,9,5],[7,5,3],[2,4,6,8]] @?= 18
-  ,  testCase "example problem 2" $
-     Day02.solution2 [[5,9,2,8],[9,4,7,3],[3,8,6,5]] @?= 9
+  [ testGroup "Solution 1"
+    [ testCase "Example" $
+      Day02.solution1 [[5,1,9,5],[7,5,3],[2,4,6,8]] @?= 18]
+  , testGroup "Solution 2"
+    [testCase "Example" $
+      Day02.solution2 [[5,9,2,8],[9,4,7,3],[3,8,6,5]] @?= 9
+    ]
   ]
 
 testDay03 =
@@ -233,3 +217,29 @@ testDay11 =
                         (Day11.solution1 (Day11.parseTxt txt) @?= v)
     check2 txt v = testCase (toS txt)
                         (Day11.solution2 (Day11.parseTxt txt) @?= v)
+
+
+testDay12 =
+  testGroup "Day 12"
+  [ testGroup "Solution 1"
+    [ testCase "Example" $
+      fmap Day12.solution1 (Day12.parseTxt Day12.testTxt) @?= Just 6
+    ]
+  , testGroup "Solution 2"
+    [ testCase "Example" $
+      fmap Day12.solution2 (Day12.parseTxt Day12.testTxt) @?= Just 2
+    ]
+  ]
+
+testDay13 =
+  testGroup "Day 13"
+  [ testGroup "Solution 1"
+    [ testCase "Example" $
+      (Day13.solution1 . Day13.mkAppState) <$> Day13.parseTxt Day13.testInput
+      @?= Just 24
+    ]
+  , testGroup "Solution 2"
+    [ testCase "Example" $
+       (Day13.solution2 =<< Day13.parseTxt Day13.testInput) @?= Just 10
+    ]
+  ]

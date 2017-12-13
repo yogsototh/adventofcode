@@ -161,5 +161,5 @@ day13 = do
   let sol1 = fmap Day13.solution1 input
   showSol "Solution 1" (int (fromMaybe 0 sol1))
   input2 <- Day13.parseInput
-  let sol2 = fmap Day13.solution2 input2
+  let sol2 = Day13.solution2 =<< input2
   showSol "Solution 2" (int (fromMaybe 0 sol2))

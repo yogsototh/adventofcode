@@ -417,13 +417,21 @@ solution2naive st =
 caughtToken :: Int -> Int -> Int -> Bool
 caughtToken delay x depth = (x + delay) `rem` (2*(depth - 1)) == 0
 
-collisions :: Int -> Map Int Int -> [Bool]
-collisions delay depths = Map.mapWithKey (caughtToken delay) depths & Map.elems
+collisions :: Int -> [(Int,Int)] -> [Bool]
+collisions delay depths = [caughtToken delay x y | (x,y) <- depths]
 
-solution2 :: Map Int Int -> Int
-solution2 depths = go depths 0
+solution2noopt :: Map Int Int -> Int
+solution2noopt depths = go (Map.toList depths) 0
   where
     go depths delay =
       if not (or (collisions delay depths))
       then delay
       else go depths (delay + 1)
+
+-- | Slightly faster than solution2brute
+solution2 :: Map Int Int -> Maybe Int
+solution2 depths = find (uncaught (Map.toList depths)) [0..period-1]
+  where
+    uncaught :: [(Int,Int)] -> Int -> Bool
+    uncaught depths delay = not (or (collisions delay depths))
+    period = foldl' lcm 1 (map (\x -> (x-1)*2) (Map.elems depths))
