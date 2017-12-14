@@ -18,6 +18,7 @@ import qualified Day10
 import qualified Day11
 import qualified Day12
 import qualified Day13
+import qualified Day14
 
 main :: IO ()
 main = defaultMain $
@@ -35,6 +36,7 @@ main = defaultMain $
   , testDay11
   , testDay12
   , testDay13
+  , testDay14
   ]
 
 testDay01 =
@@ -241,5 +243,19 @@ testDay13 =
   , testGroup "Solution 2"
     [ testCase "Example" $
        (Day13.solution2 =<< Day13.parseTxt Day13.testInput) @?= Just 10
+    ]
+  ]
+
+testDay14 =
+  testGroup "Day 14"
+  [ testGroup "Solution 1"
+    [ testCase "Example" $
+      Day14.solution1 Day14.testInput @?= Just 8108
+    ]
+  , testGroup "Solution 2"
+    [ testCaseSteps "Example" $ \step -> do
+        sol <- Day14.solution2 Day14.testInput
+        when (sol /= 1242)
+          (assertFailure "Should be 1242 groups")
     ]
   ]
