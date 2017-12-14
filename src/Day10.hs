@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Strict            #-}
 {-|
 description:
 
@@ -145,9 +146,9 @@ import           Protolude
 import           Data.Char       (chr, ord)
 import           Data.List       (foldl1')
 import qualified Data.Map.Strict as Map
+import qualified Data.Text       as T
 import           Numeric         (showHex)
 import           Text.Parsec
-import qualified Data.Text as T
 
 testInput :: AppState
 testInput = mkAppState 5 [3,4,1,5]
