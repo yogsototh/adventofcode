@@ -15,3 +15,9 @@ To launch the tests:
 ~~~
 > stack test
 ~~~
+
+To launch only the tests of one day:
+
+~~~
+> stack test --test-arguments="-p \"Day 14\""
+~~~
