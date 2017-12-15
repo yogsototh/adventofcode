@@ -19,6 +19,7 @@ import qualified Day11
 import qualified Day12
 import qualified Day13
 import qualified Day14
+import qualified Day15
 
 main :: IO ()
 main = defaultMain $
@@ -37,6 +38,7 @@ main = defaultMain $
   , testDay12
   , testDay13
   , testDay14
+  , testDay15
   ]
 
 testDay01 =
@@ -257,5 +259,17 @@ testDay14 =
         sol <- Day14.solution2 Day14.testInput
         when (sol /= 1242)
           (assertFailure "Should be 1242 groups")
+    ]
+  ]
+
+testDay15 =
+  testGroup "Day 15"
+  [ testGroup "Solution 1"
+    [ testCase "Example" $
+      Day15.solution1 Day15.testInput @?= 588
+    ]
+  , testGroup "Solution 2"
+    [ testCase "Example" $
+      Day15.solution2 Day15.testInput @?= 309
     ]
   ]
