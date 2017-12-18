@@ -2,22 +2,22 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 587471fb4a9e3e35e4a8caa85fa326f402b6840f011abfe42a46f3ea9b123026
+-- hash: 31e05860d959d56216fb654ea1de930cc755c6df1d83d10b43259637eed396c4
 
-name:           adventofcode
-version:        0.1.0.0
-synopsis:       Solutions for adventofcode
-description:    Please see the README on Github at <https://github.com/yogsototh/adventofcode#readme>
-category:       Web
-homepage:       https://github.com/yogsototh/adventofcode#readme
-bug-reports:    https://github.com/yogsototh/adventofcode/issues
-author:         Yann Esposito
-maintainer:     yann.esposito@gmail.com
-copyright:      Copyright: © 2017 Yann Esposito
-license:        BSD3
-license-file:   LICENSE
-build-type:     Simple
-cabal-version:  >= 1.10
+name:                adventofcode
+version:             0.1.0.0
+synopsis:            Solutions for adventofcode
+homepage:            https://github.com/yogsototh/adventofcode#readme
+bug-reports:         https://github.com/yogsototh/adventofcode/issues
+license:             BSD3
+license-file:        LICENSE
+author:              Yann Esposito
+maintainer:          yann.esposito@gmail.com
+copyright:           Copyright: © 2017 Yann Esposito
+category:            Web
+build-type:          Simple
+cabal-version:       >= 1.10
+description:         Please see the README on Github at <https://github.com/yogsototh/adventofcode#readme>
 
 extra-source-files:
     README.md
@@ -29,14 +29,6 @@ source-repository head
 library
   hs-source-dirs:
       src
-  build-depends:
-      array
-    , base >=4.7 && <5
-    , containers
-    , foldl
-    , parsec
-    , protolude
-    , text
   exposed-modules:
       Day01
       Day02
@@ -55,13 +47,24 @@ library
       Day15
       Day16
   other-modules:
+      Day17
+      Permutations
       Paths_adventofcode
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , containers
+    , foldl
+    , parsec
+    , protolude
+    , text
+    , vector
   default-language: Haskell2010
 
 executable adventofcode-exe
-  main-is: Main.hs
   hs-source-dirs:
       app
+  main-is: Main.hs
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       adventofcode
@@ -75,10 +78,9 @@ executable adventofcode-exe
 
 test-suite adventofcode-test
   type: exitcode-stdio-1.0
-  main-is: Spec.hs
   hs-source-dirs:
       test
-  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
+  main-is: Spec.hs
   build-depends:
       HUnit
     , adventofcode
@@ -88,4 +90,5 @@ test-suite adventofcode-test
     , tasty-hunit
   other-modules:
       Paths_adventofcode
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   default-language: Haskell2010

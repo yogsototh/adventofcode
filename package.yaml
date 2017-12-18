@@ -37,6 +37,7 @@ library:
   - text
   - array
   - parsec
+  - vector
 executables:
   adventofcode-exe:
     main: Main.hs

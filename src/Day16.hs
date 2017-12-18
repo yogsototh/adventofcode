@@ -1,7 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-
 {-| description:
 --- Day 16: Permutation Promenade ---
 
@@ -54,12 +54,15 @@ In what order are the programs standing after their billion dances?
 
 module Day16 where
 
-import Protolude hiding ((<|>),swap)
+import Protolude hiding ((<|>),swap,rotate,(<>))
 
 import Data.IORef
+import Data.Semigroup (Semigroup, (<>), stimes)
+import Data.Array
 import Data.Array.MArray
 import Data.Array.IO (IOUArray)
 import Text.Parsec
+import Permutations
 
 testInput :: [Command]
 testInput = readInput "s1,x3/4,pe/b"
@@ -151,24 +154,24 @@ applyCommand fastarr (Exchange rawi rawj) = do
       j = (rawj - cur) `mod` s
   li <- readArray (arr fastarr) i
   lj <- readArray (arr fastarr) j
-  swap i j (arr fastarr)
-  swap li lj (revarr fastarr)
+  faswap i j (arr fastarr)
+  faswap li lj (revarr fastarr)
 applyCommand fastarr (Partner l k) = do
   li <- readArray (revarr fastarr) l
   lj <- readArray (revarr fastarr) k
-  swap l k (revarr fastarr)
-  swap li lj (arr fastarr)
+  faswap l k (revarr fastarr)
+  faswap li lj (arr fastarr)
 
-swap :: (MArray a e m, Ix i) => i -> i -> a i e -> m ()
-swap i j arr = do
+faswap :: (MArray a e m, Ix i) => i -> i -> a i e -> m ()
+faswap i j arr = do
   tmpi <- readArray arr i
   tmpj <- readArray arr j
   writeArray arr i tmpj
   writeArray arr j tmpi
 
 -- | brute force, not the real way to do it
-solution2 :: Int -> [Command] -> IO [Char]
-solution2 len commands = do
+solution2bruteforce :: Int -> [Command] -> IO [Char]
+solution2bruteforce len commands = do
   let letters = take len ['a'..'p']
   array <- FastArr <$> newListArray (0,len-1) letters
            <*> newListArray ('a',fromMaybe 'a' (last letters)) [0..len-1]
@@ -185,3 +188,25 @@ solution2 len commands = do
   curs <- readIORef (cursor array)
   let shift = size array - curs
   return $ drop shift elems ++ take shift elems
+
+data Dance = Dance { iperm :: Permutation Int
+                   , cperm :: Permutation Char
+                   }
+
+applyCmd :: Command -> Dance -> Dance
+applyCmd (Spin n) d@Dance{..} = d { iperm = rotate n iperm}
+applyCmd (Exchange i j) d@Dance{..} = d { iperm = swap i j iperm }
+applyCmd (Partner x y) d@Dance{..} = d { cperm = swap x y cperm }
+
+solution2 :: Int -> [Command] -> [Char]
+solution2 len commands = do
+  let letters = take len ['a'..'p']
+      lastLetter = fromMaybe 'a' (head (reverse letters))
+      initDance = Dance (nullPerm (0,len-1)) (nullPerm ('a',lastLetter))
+      firstDance = foldl' (flip applyCmd) initDance commands
+      finalDance = stimes 1 firstDance
+      tmpArray = listArray (0,len-1) (elems (unPerm (cperm finalDance)))
+  permute (iperm finalDance) tmpArray & elems
+
+instance Semigroup Dance where
+  Dance r1 p1 <> Dance r2 p2 = Dance (r1 <> r2) (p1 <> p2)
