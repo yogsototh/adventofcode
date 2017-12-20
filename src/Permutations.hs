@@ -1,4 +1,7 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Permutations where
+
+import Protolude hiding (swap)
 
 import           Data.Array
 import           Data.Proxy
@@ -18,6 +21,12 @@ permute (Permutation p) a =
   where
     b@(i0,iN) = bounds a
 
+revpermute :: (Ix i,Enum i) => Permutation i -> Permutation i
+revpermute (Permutation p) =
+  Permutation $ p // [(j,i) | (i,j) <- assocs p]
+
+
+
 testPerm :: Array Int Int
 testPerm = listArray (0,4) [3,2,4,1,0]
 
@@ -28,7 +37,7 @@ nullPerm :: (Ix i,Enum i) => (i,i) -> Permutation i
 nullPerm bnds@(start,end) = Permutation $ listArray bnds [start..end]
 
 swap :: (Ix i) => i -> i -> Permutation i -> Permutation i
-swap x y (Permutation p) = Permutation (p // [(x,p ! y), (y,p ! x)])
+swap x y (Permutation p) = Permutation (p // [(x,y), (y,x)])
 
 rotate :: (Ix i) => Int -> Permutation i -> Permutation i
 rotate n (Permutation p) =
@@ -38,4 +47,5 @@ rotate n (Permutation p) =
   in Permutation (p // newis)
 
 instance (Ix i,Enum i) => Semigroup (Permutation i) where
-  p1 <> Permutation a2 = Permutation $ permute p1 a2
+  Permutation a1 <> Permutation a2 = Permutation $
+    array (bounds a2) [ (i, a2 ! j) | (i,j) <- assocs a1]

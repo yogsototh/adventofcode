@@ -1,8 +1,11 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NoImplicitPrelude     #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+
 {-| description:
+
 --- Day 16: Permutation Promenade ---
 
 You come upon a very unusual sight; a group of programs here appear to be
@@ -48,21 +51,19 @@ pe/b, swapping programs e and b: ceadb.
 
 In what order are the programs standing after their billion dances?
 
-
-
 |-}
 
 module Day16 where
 
-import Protolude hiding ((<|>),swap,rotate,(<>))
+import           Protolude         hiding (rotate, swap, (<>), (<|>))
 
-import Data.IORef
-import Data.Semigroup (Semigroup, (<>), stimes)
-import Data.Array
-import Data.Array.MArray
-import Data.Array.IO (IOUArray)
-import Text.Parsec
-import Permutations
+import           Data.Array
+import           Data.Array.IO     (IOUArray)
+import           Data.Array.MArray
+import           Data.IORef
+import           Data.Semigroup    (Semigroup, stimes, (<>))
+import           Permutations
+import           Text.Parsec
 
 testInput :: [Command]
 testInput = readInput "s1,x3/4,pe/b"
@@ -108,10 +109,10 @@ int = do
 
 ---
 
-data FastArr = FastArr { arr :: IOUArray Int Char
+data FastArr = FastArr { arr    :: IOUArray Int Char
                        , revarr :: IOUArray Char Int
                        , cursor :: IORef Int
-                       , size :: Int
+                       , size   :: Int
                        }
 
 showFastarr :: FastArr -> IO ()
@@ -127,8 +128,8 @@ showFastarr fastarr = do
 
 
 last :: [a] -> Maybe a
-last [] = Nothing
-last [x] = Just x
+last []     = Nothing
+last [x]    = Just x
 last (_:xs) = last xs
 
 solution1 :: Int -> [Command] -> IO [Char]
@@ -191,22 +192,39 @@ solution2bruteforce len commands = do
 
 data Dance = Dance { iperm :: Permutation Int
                    , cperm :: Permutation Char
-                   }
+                   } deriving (Eq, Show)
 
 applyCmd :: Command -> Dance -> Dance
-applyCmd (Spin n) d@Dance{..} = d { iperm = rotate n iperm}
+applyCmd (Spin n)       d@Dance{..} = d { iperm = rotate n iperm }
 applyCmd (Exchange i j) d@Dance{..} = d { iperm = swap i j iperm }
-applyCmd (Partner x y) d@Dance{..} = d { cperm = swap x y cperm }
+applyCmd (Partner x y)  d@Dance{..} = d { cperm = swap x y cperm }
 
-solution2 :: Int -> [Command] -> [Char]
-solution2 len commands = do
+solution2 :: Int -> Int -> [Command] -> [Char]
+solution2 len nbIter commands = do
   let letters = take len ['a'..'p']
       lastLetter = fromMaybe 'a' (head (reverse letters))
       initDance = Dance (nullPerm (0,len-1)) (nullPerm ('a',lastLetter))
       firstDance = foldl' (flip applyCmd) initDance commands
-      finalDance = stimes 1 firstDance
+      finalDance = stimes nbIter firstDance
       tmpArray = listArray (0,len-1) (elems (unPerm (cperm finalDance)))
   permute (iperm finalDance) tmpArray & elems
 
 instance Semigroup Dance where
   Dance r1 p1 <> Dance r2 p2 = Dance (r1 <> r2) (p1 <> p2)
+
+test n = do
+  input <- fmap (take n) parseInput
+  sol1 <- solution1 16 input
+  let sol2 = solution2 16 1 input
+  print (head (reverse input))
+  print sol1
+  print sol2
+  return $ sol1 == sol2
+
+test2 commands = do
+  sol1 <- solution1 3 commands
+  let sol2 = solution2 3 1 commands
+  print (head (reverse commands))
+  print sol1
+  print sol2
+  return $ sol1 == sol2
