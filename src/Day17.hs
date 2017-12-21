@@ -101,7 +101,7 @@ nextPreStep nbSteps b@Buffer{..} =
 
 showBuffer :: Buffer -> Text
 showBuffer Buffer{..} =
-  zip  [0..] elems
+  zip  [0..] (take 30 elems)
   & map (\(i,v) -> if i == pos
                      then "(" <> show v <> ") "
                      else show v <> " ")
@@ -124,25 +124,30 @@ addElem roundNumber b@Buffer {..} =
                ++ [roundNumber]
                ++ drop (pos + 1) elems
 
-solution1 :: Int -> Int -> IO (Maybe Int)
-solution1 nbOcc nbSteps = go initState 0
+solution1 :: Int -> Int -> Maybe Int
+solution1 nbOcc nbSteps = finalState & elems & elemAt (1 + (pos finalState))
   where
     initState = Buffer [0] 0
-    go st n
-      | n == nbOcc = st & elems & elemAt (1 + (pos st)) & return
-      | otherwise = do
-            -- print st
-            -- putText $ "> " <> showBuffer st
-            go (nextStep nbSteps (n+1) st) (n+1)
-    elemAt :: Int -> [a] -> Maybe a
-    elemAt 0 (x:xs) = Just x
-    elemAt n (_:xs) = elemAt (n-1) xs
-    elemAt _ _      = Nothing
+    finalState = genState nbOcc nbSteps 0 initState
+
+genState :: Int -> Int -> Int -> Buffer -> Buffer
+genState nbOcc nbSteps n st
+  | n == nbOcc = -- traceShow st $
+                 st
+  | otherwise = -- traceShow (showBuffer st) $
+                genState  nbOcc nbSteps (n+1) (nextStep nbSteps (n+1) st)
+
+elemAt :: Int -> [a] -> Maybe a
+elemAt 0 (x:xs) = Just x
+elemAt n (_:xs) = elemAt (n-1) xs
+elemAt _ _      = Nothing
 
 data Buf2 = Buf2 { position :: Int
                  , size :: Int
                  , lastSol :: Int
                  }
+
+
 
 solution2 :: Int -> Int -> Int
 solution2 nbOcc nbSteps = go initState 1
@@ -150,12 +155,13 @@ solution2 nbOcc nbSteps = go initState 1
     initState = Buf2 0 1 0
     go st@Buf2{..} n
       | n == nbOcc = lastSol
-      | (position + nbSteps) `rem` size == 0 =
-          traceShow n $ go (st { position = 1
-                               , lastSol = n
-                               , size = size + 1
-                               })
-                           (n+1)
-      | otherwise = go (st { position = (1 + position + nbSteps) `rem` size
+      | (1 + position + nbSteps) `rem` size == 0 =
+          -- traceShow n $
+          go (st { position = (1 + position + nbSteps) `rem` size
+                 , lastSol = n
+                 , size = size + 1
+                 })
+             (n+1)
+      | otherwise = go (st { position = (1+ position + nbSteps) `rem` size
                            , size = size + 1 })
                        (n+1)

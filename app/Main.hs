@@ -200,7 +200,7 @@ day16 = do
 day17 :: IO ()
 day17 = do
   putText "Day 17:"
-  sol1 <- Day17.solution1 2017 Day17.input
+  let sol1 = Day17.solution1 2017 Day17.input
   showSol "Solution 1" (int (fromMaybe 0 sol1))
   let sol2 = Day17.solution2 50000000 Day17.input
   showSol "Solution 2" (int sol2)
