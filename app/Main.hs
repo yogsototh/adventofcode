@@ -25,6 +25,7 @@ import qualified Day14
 import qualified Day15
 import qualified Day16
 import qualified Day17
+import qualified Day18
 
 showSol :: [Char] -> Doc -> IO ()
 showSol txt d = putText . toS . render $
@@ -55,6 +56,7 @@ solutions = Map.fromList [(["01"], day01)
                          ,(["15"], day15)
                          ,(["16"], day16)
                          ,(["17"], day17)
+                         ,(["18"], day18)
                          ]
 
 
@@ -204,3 +206,15 @@ day17 = do
   showSol "Solution 1" (int (fromMaybe 0 sol1))
   let sol2 = Day17.solution2 50000000 Day17.input
   showSol "Solution 2" (int sol2)
+
+day18 :: IO ()
+day18 = do
+  putText "Day 18:"
+  minput <- Day18.parseInput
+  case minput of
+    Nothing -> putText "parsing error!"
+    Just input -> do
+      let sol1 = Day18.solution1 input
+      showSol "Solution 1" (int (fromMaybe 0 sol1))
+      let sol2 = Day18.solution2 input
+      showSol "Solution 2" (int sol2)

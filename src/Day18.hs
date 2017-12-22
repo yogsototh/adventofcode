@@ -148,12 +148,12 @@ data Instruction =
   | Jgz Value Value
   deriving (Show)
 
-parseInput :: IO Program
+parseInput :: IO (Maybe Program)
 parseInput = parseTxt <$> readFile "inputs/day18.txt"
 
-parseTxt :: Text -> Program
+parseTxt :: Text -> Maybe Program
 parseTxt txt = let instr = txt & T.lines & map (parseInstr . T.words) in
-  listArray (0,length instr-1) instr
+  fmap (listArray (0,length instr-1)) (sequenceA instr)
 
 txtToInt :: Text -> Maybe Int
 txtToInt = fmap fst . head . reads . toS
@@ -162,15 +162,15 @@ parseValue :: Text -> Value
 parseValue t = let c = T.head t in
   if C.isLetter c then R (Reg t) else I (fromMaybe 0 (txtToInt t))
 
-parseInstr :: [Text] -> Instruction
-parseInstr ["snd",v]     = Snd (parseValue v)
-parseInstr ["set",r,v]   = Set (Reg r) (parseValue v)
-parseInstr ["add",r,v]   = Add (Reg r) (parseValue v)
-parseInstr ["mul",r,v]   = Mul (Reg r) (parseValue v)
-parseInstr ["mod",r,v]   = Mod (Reg r) (parseValue v)
-parseInstr ["rcv",r]     = Rcv (Reg r)
-parseInstr ["jgz",v1,v2] = Jgz (parseValue v1) (parseValue v2)
-parseInstr _             = error "Don't knwow this instruction"
+parseInstr :: [Text] -> Maybe Instruction
+parseInstr ["snd",v]     = Just $ Snd (parseValue v)
+parseInstr ["set",r,v]   = Just $ Set (Reg r) (parseValue v)
+parseInstr ["add",r,v]   = Just $ Add (Reg r) (parseValue v)
+parseInstr ["mul",r,v]   = Just $ Mul (Reg r) (parseValue v)
+parseInstr ["mod",r,v]   = Just $ Mod (Reg r) (parseValue v)
+parseInstr ["rcv",r]     = Just $ Rcv (Reg r)
+parseInstr ["jgz",v1,v2] = Just $ Jgz (parseValue v1) (parseValue v2)
+parseInstr _             = Nothing
 
 testInput :: Text
 testInput = "set a 1\n\
