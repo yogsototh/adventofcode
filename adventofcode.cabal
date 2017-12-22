@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f9a4697d8f11ab3d8140e99316d613f42cd6e2550804b33ce3045f2fb81715a1
+-- hash: d871caa5723224d888f552d659e29f2e860d791e12ad0c0d7ced450d2334b83d
 
 name:                adventofcode
 version:             0.1.0.0
@@ -48,6 +48,7 @@ library
       Day16
       Day17
   other-modules:
+      Day18
       Permutations
       Paths_adventofcode
   build-depends:
