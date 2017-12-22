@@ -1,6 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE DuplicateRecordFields   #-}
 {-|
 --- Day 18: Duet ---
 
@@ -143,7 +144,7 @@ data Instruction =
   | Add Reg Value
   | Mul Reg Value
   | Mod Reg Value
-  | Rcv Value
+  | Rcv Reg
   | Jgz Value Value
   deriving (Show)
 
@@ -167,7 +168,7 @@ parseInstr ["set",r,v]   = Set (Reg r) (parseValue v)
 parseInstr ["add",r,v]   = Add (Reg r) (parseValue v)
 parseInstr ["mul",r,v]   = Mul (Reg r) (parseValue v)
 parseInstr ["mod",r,v]   = Mod (Reg r) (parseValue v)
-parseInstr ["rcv",v]     = Rcv (parseValue v)
+parseInstr ["rcv",r]     = Rcv (Reg r)
 parseInstr ["jgz",v1,v2] = Jgz (parseValue v1) (parseValue v2)
 parseInstr _             = error "Don't knwow this instruction"
 
@@ -232,8 +233,8 @@ nextInstr (Mod r v) st@ProgState{..} =
     x = fromMaybe 0 (toValue (R r) st)
     y = fromMaybe 0 (toValue v st)
 
-nextInstr (Rcv v)   st@ProgState{..} =
-  st { lastRcv = case toValue v st of
+nextInstr (Rcv v) st@ProgState{..} =
+  st { lastRcv = case toValue (R v) st of
                    Just 0 -> lastRcv
                    Nothing -> lastRcv
                    _ -> lastPlayed
@@ -248,3 +249,98 @@ nextInstr instr@(Jgz v1 v2) st@ProgState{..} =
 toValue :: Value -> ProgState -> Maybe Int
 toValue (I i) _             = Just i
 toValue (R c) ProgState{..} = Map.lookup c mem
+
+
+-- Sol 2
+
+
+data P2State =
+  P2State { mem :: Map.Map Reg Int
+          , cur :: Int
+          , buffer :: [Int]
+          , nbSend :: Int
+          , waiting :: Bool
+          } deriving (Show)
+
+type S2State = (P2State,P2State)
+solution2 :: Program -> Int
+solution2 p = go p initState
+  where
+    initState :: S2State
+    initState = ( P2State (Map.fromList [(Reg "p",0)]) 0 [] 0 False
+                , P2State (Map.fromList [(Reg "p",1)]) 0 [] 0 False)
+    terminated p P2State{..} =
+      let (start,stop) = bounds p in cur < start || cur > stop
+    go :: Program -> S2State -> Int
+    go p (st0,st1) =
+      if ((terminated p st0) || (waiting st0))
+         && ((terminated p st1) || (waiting st1))
+      then nbSend st1
+      else
+        let
+        (nextst0,msgs1) = if terminated p st0
+                          then (st0,[])
+                          else n2Instr (p ! cur st0) st0
+        (nextst1,msgs0) = if terminated p st1
+                          then (st1,[])
+                          else n2Instr (p ! cur st1) st1
+        in
+        go p ( nextst0 { buffer = buffer nextst0 ++ msgs0 }
+             , nextst1 { buffer = buffer nextst1 ++ msgs1 })
+
+m2list :: Maybe a -> [a]
+m2list Nothing = []
+m2list (Just x) = [x]
+
+n2Instr :: Instruction -> P2State -> (P2State,[Int])
+n2Instr (Snd v)   st@P2State{..} =
+  (st {cur = cur + 1
+      , nbSend = nbSend + 1}, m2list (toV v st))
+
+n2Instr (Set r v) st@P2State{..} =
+  (st { mem = Map.insert r (fromMaybe 0 (toV v st)) mem
+     , cur = cur + 1}, [])
+
+n2Instr (Add r v) st@P2State{..} =
+  (st { mem = Map.insert r (x+y) mem
+     , cur = cur + 1}
+  , [])
+  where
+    x = fromMaybe 0 (toV (R r) st)
+    y = fromMaybe 0 (toV v st)
+
+n2Instr (Mul r v) st@P2State{..} =
+  (st { mem = Map.insert r (x*y) mem
+     , cur = cur + 1}
+  , [])
+  where
+    x = fromMaybe 0 (toV (R r) st)
+    y = fromMaybe 0 (toV v st)
+
+n2Instr (Mod r v) st@P2State{..} =
+  (st { mem = Map.insert r (x `mod` y) mem
+     , cur = cur + 1}
+  , [])
+  where
+    x = fromMaybe 0 (toV (R r) st)
+    y = fromMaybe 0 (toV v st)
+
+n2Instr (Rcv r) st@P2State{..} =
+  if null buffer
+  then (st {waiting = True}, [])
+  else let (x:xs) = buffer in
+    (st { buffer = xs
+        , mem = Map.insert r x mem
+        , cur = cur + 1
+        }
+    , [])
+
+n2Instr instr@(Jgz v1 v2) st@P2State{..} =
+  (st { cur = cur + if x1 > 0 then x2 else 1 },[])
+  where
+    x1 = fromMaybe 0 (toV v1 st)
+    x2 = fromMaybe 0 (toV v2 st)
+
+toV :: Value -> P2State -> Maybe Int
+toV (I i) _             = Just i
+toV (R c) P2State{..} = Map.lookup c mem
