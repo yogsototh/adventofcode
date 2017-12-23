@@ -20,6 +20,15 @@ import qualified Day12
 import qualified Day13
 import qualified Day14
 import qualified Day15
+import qualified Day16
+import qualified Day17
+import qualified Day18
+import qualified Day19
+-- import qualified Day20
+-- import qualified Day21
+-- import qualified Day22
+-- import qualified Day23
+-- import qualified Day24
 
 main :: IO ()
 main = defaultMain $
@@ -272,4 +281,58 @@ testDay15 =
     [ testCase "Example" $
       Day15.solution2 Day15.testInput @?= 309
     ]
+  ]
+
+testDay16 =
+  testGroup "Day 16"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay17 =
+  testGroup "Day 17"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay18 =
+  testGroup "Day 18"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay19 =
+  testGroup "Day 19"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay20 =
+  testGroup "Day 20"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay21 =
+  testGroup "Day 21"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay22 =
+  testGroup "Day 22"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay23 =
+  testGroup "Day 23"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
+  ]
+
+testDay24 =
+  testGroup "Day 24"
+  [ testGroup "Solution 1" []
+  , testGroup "Solution 2" []
   ]

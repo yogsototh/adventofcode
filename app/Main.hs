@@ -26,6 +26,12 @@ import qualified Day15
 import qualified Day16
 import qualified Day17
 import qualified Day18
+import qualified Day19
+-- import qualified Day20
+-- import qualified Day21
+-- import qualified Day22
+-- import qualified Day23
+-- import qualified Day24
 
 showSol :: [Char] -> Doc -> IO ()
 showSol txt d = putText . toS . render $
@@ -57,6 +63,12 @@ solutions = Map.fromList [(["01"], day01)
                          ,(["16"], day16)
                          ,(["17"], day17)
                          ,(["18"], day18)
+                         ,(["19"], day19)
+                         ,(["20"], dayXX)
+                         ,(["21"], dayXX)
+                         ,(["22"], dayXX)
+                         ,(["23"], dayXX)
+                         ,(["24"], dayXX)
                          ]
 
 
@@ -218,3 +230,15 @@ day18 = do
       showSol "Solution 1" (int (fromMaybe 0 sol1))
       let sol2 = Day18.solution2 input
       showSol "Solution 2" (int sol2)
+
+day19 :: IO ()
+day19 = do
+  putText "Day 19:"
+  input <- Day19.parseInput
+  let sol1 = Day19.solution1 input
+  showSol "Solution 1" (text sol1)
+  let sol2 = Day19.solution2 input
+  showSol "Solution 2" (int sol2)
+
+dayXX :: IO ()
+dayXX = putText "Not done yet"

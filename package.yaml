@@ -31,6 +31,12 @@ library:
   - Day16
   - Day17
   - Day18
+  - Day19
+  # - Day20
+  # - Day21
+  # - Day22
+  # - Day23
+  # - Day24
   dependencies:
   - base >=4.7 && <5
   - protolude
@@ -40,6 +46,8 @@ library:
   - array
   - parsec
   - vector
+  - lens
+  - generic-lens
 executables:
   adventofcode-exe:
     main: Main.hs

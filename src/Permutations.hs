@@ -49,3 +49,23 @@ rotate n (Permutation p) =
 instance (Ix i,Enum i) => Semigroup (Permutation i) where
   Permutation a1 <> Permutation a2 = Permutation $
     array (bounds a2) [ (i, a2 ! j) | (i,j) <- assocs a1]
+
+{-
+
+0 1 2 === 0
+1 0 2 => p1
+0 2 1 => p2
+2 1 0 => p3
+1 2 0 => p4
+
+p1 <> p2 ===> 2 0 1
+p2 <> p1 ===> 1 2 0
+
+-}
+
+testPermutation =
+  let p0 = nullPerm (0,2)
+      p1 = swap 0 1 p0
+      p2 = swap 1 2 p0
+      p3 = p1 <> p2
+  in p2 <> p1
