@@ -6,14 +6,18 @@ import Protolude hiding (swap)
 import           Data.Array
 import           Data.Proxy
 import           Data.Semigroup
+import qualified Data.Set as Set
 import           GHC.TypeLits
 
+-- | properties
+-- a permutation is a bijection
 newtype Permutation i =
-  Permutation (Array i i)
+  Permutation { unPerm :: Array i i }
   deriving (Eq,Ord,Show)
 
-unPerm :: Permutation i -> Array i i
-unPerm (Permutation x) = x
+isBijection :: (Ix i) => Permutation i -> Bool
+isBijection p =
+  Set.fromList (elems (unPerm p)) == Set.fromList (indices (unPerm p))
 
 permute :: (Ix i,Enum i) => Permutation i -> Array i e -> Array i e
 permute (Permutation p) a =
@@ -48,24 +52,4 @@ rotate n (Permutation p) =
 
 instance (Ix i,Enum i) => Semigroup (Permutation i) where
   Permutation a1 <> Permutation a2 = Permutation $
-    array (bounds a2) [ (i, a2 ! j) | (i,j) <- assocs a1]
-
-{-
-
-0 1 2 === 0
-1 0 2 => p1
-0 2 1 => p2
-2 1 0 => p3
-1 2 0 => p4
-
-p1 <> p2 ===> 2 0 1
-p2 <> p1 ===> 1 2 0
-
--}
-
-testPermutation =
-  let p0 = nullPerm (0,2)
-      p1 = swap 0 1 p0
-      p2 = swap 1 2 p0
-      p3 = p1 <> p2
-  in p2 <> p1
+    array (bounds a1) [ (i, a1 ! j) | (i,j) <- assocs a2]

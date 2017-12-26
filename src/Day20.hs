@@ -2,6 +2,8 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types        #-}
+{-# LANGUAGE RankNTypes        #-}
 {-# LANGUAGE TypeApplications  #-}
 {-|
 
@@ -61,6 +63,7 @@ import           Control.Lens          hiding ((&))
 -- import           Data.Array
 import           Data.Generics.Product
 -- import qualified Data.Text             as T
+import qualified Data.Set              as Set
 import           GHC.Generics
 import           Text.Parsec           hiding (State)
 
@@ -114,7 +117,7 @@ parseInt = do
   str <- many1 digit
   let strint = case sgn of
                     Nothing -> str
-                    Just _ -> "-" <> str
+                    Just _  -> "-" <> str
   return $ fromMaybe 0 (reads strint & head & fmap fst)
 
 -- Solution 1
@@ -142,11 +145,65 @@ solution1 input =
 type Solution2 = Int
 
 solution2 :: Input -> Solution2
-solution2 grid =
-  let initState = undefined
-  in extractSol $ execState solve2 initState
+solution2 input =
+  let sorted = input
+               & zip ([0..] :: [Int])
+               & sortOn (\(_,p)->d (pos p))
+               & sortOn (\(_,p)->d (vit p))
+               & sortOn (\(_,p)->d (acc p))
+  in notCollided sorted & map fst & Set.fromList & Set.size
   where
-    extractSol :: AppState -> Solution2
-    extractSol = undefined
-    solve2 :: State AppState ()
-    solve2 = undefined
+    d = dist mempty
+    notCollided :: [(Int,Particle)] -> [(Int,Particle)]
+    notCollided sorted = do
+      (i,p1) <- sorted
+      (j,p2) <- sorted
+      guard (j > i)
+      guard (not (collide p1 p2))
+      return (i,p1)
+    collide :: Particle -> Particle -> Bool
+    collide p1 p2 = let trivialracines = [1..10]
+                    in checkRacines p1 p2 trivialracines
+    potentialRacines :: Particle -> Particle -> [Int]
+    potentialRacines p1 p2 =
+      let a = (acc p1 ^. field @"x") - (acc p2 ^. field @"x")
+          b = (vit p1 ^. field @"x") - (vit p2 ^. field @"x")
+          c = (pos p1 ^. field @"x") - (pos p2 ^. field @"x")
+      in
+        if a /= 0
+        then
+          let delta = b^2 - 4*a*c in
+          if delta >= 0
+          then [ (-b + isqrt delta) `div` (2*a)
+               , (-b - isqrt delta) `div` (2*a)
+               , 1+(-b - isqrt delta) `div` (2*a)
+               , 1+(-b + isqrt delta) `div` (2*a)
+               , 2+(-b - isqrt delta) `div` (2*a)
+               , 2+(-b + isqrt delta) `div` (2*a)
+               ] & filter (>0)
+          else []
+        else [-c `div` b | b /= 0]
+    isqrt :: Int -> Int
+    isqrt = fromIntegral . floor . sqrt . fromIntegral
+    pol :: Particle -> Particle -> Lens' Coord Int -> (Int -> Int)
+    pol p1 p2 l = \x -> a*(x*x) + (b*x) + c
+      where
+        a :: Int
+        a = (acc p1 ^. l) - (acc p2 ^. l)
+        b :: Int
+        b = (vit p1 ^. l) - (vit p2 ^. l)
+        c :: Int
+        c = (pos p1 ^. l) - (pos p2 ^. l)
+    checkRacines :: Particle -> Particle -> [Int] -> Bool
+    checkRacines _ _ [] = False
+    checkRacines p1 p2 (x:xs) =
+      traceShow (p1,p2,x
+                , pol p1 p2 (field @"x") x == 0
+                , pol p1 p2 (field @"y") x == 0
+                , pol p1 p2 (field @"z") x == 0)
+                (pol p1 p2 (field @"x") x == 0
+                 && pol p1 p2 (field @"y") x == 0
+                 && pol p1 p2 (field @"z") x == 0)
+      || checkRacines p1 p2 xs
+
+

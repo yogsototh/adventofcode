@@ -48,6 +48,7 @@ main = defaultMain $
   , testDay13
   , testDay14
   , testDay15
+  , testDay16
   ]
 
 testDay01 =
@@ -285,9 +286,24 @@ testDay15 =
 
 testDay16 =
   testGroup "Day 16"
-  [ testGroup "Solution 1" []
-  , testGroup "Solution 2" []
+  [ testGroup "Solution 1"
+    [ testCase "Example" $ do
+        sol1 <- Day16.solution1 5 Day16.testInput
+        sol1 @?= "baedc"
+    ]
+  , testGroup "Solution 2"
+    [ testCase "Check equal to sol1 input of length 1" $ test2 1
+    , testCase "Check equal to sol1 input of length 1000" $ test2 1000
+    ]
   ]
+  where
+    test2 n = do
+      input <- fmap (take n) Day16.parseInput
+      sol1 <- Day16.solution1 16 input
+      let sol2 = Day16.solution2 16 1 input
+      sol1 @?= sol2
+
+
 
 testDay17 =
   testGroup "Day 17"

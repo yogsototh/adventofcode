@@ -194,20 +194,26 @@ data Dance = Dance { iperm :: Permutation Int
                    , cperm :: Permutation Char
                    } deriving (Eq, Show)
 
-applyCmd :: Command -> Dance -> Dance
-applyCmd (Spin n)       d@Dance{..} = d { iperm = rotate n iperm }
-applyCmd (Exchange i j) d@Dance{..} = d { iperm = swap i j iperm }
-applyCmd (Partner x y)  d@Dance{..} = d { cperm = swap x y cperm }
+applyCmd :: Permutation Int -> Permutation Char -> Dance -> Command -> Dance
+applyCmd p0 _ d@Dance{..} (Spin n)       = d { iperm = iperm <> rotate n p0 }
+applyCmd p0 _ d@Dance{..} (Exchange i j) = d { iperm = iperm <> swap i j p0 }
+applyCmd _ p0 d@Dance{..} (Partner x y)  = d { cperm = swap x y p0 <> cperm }
 
 solution2 :: Int -> Int -> [Command] -> [Char]
 solution2 len nbIter commands = do
   let letters = take len ['a'..'p']
       lastLetter = fromMaybe 'a' (head (reverse letters))
-      initDance = Dance (nullPerm (0,len-1)) (nullPerm ('a',lastLetter))
-      firstDance = foldl' (flip applyCmd) initDance commands
+      ip = nullPerm (0,len-1)
+      cp = nullPerm ('a',lastLetter)
+      initDance = Dance ip cp
+      firstDance = foldl' (applyCmd ip cp) initDance commands
       finalDance = stimes nbIter firstDance
-      tmpArray = listArray (0,len-1) (elems (unPerm (cperm finalDance)))
-  permute (iperm finalDance) tmpArray & elems
+      tmpArray = listArray ('a',lastLetter) letters
+  permute (cperm finalDance) tmpArray
+      & elems
+      & listArray (0,len-1)
+      & permute (iperm finalDance)
+      & elems
 
 instance Semigroup Dance where
   Dance r1 p1 <> Dance r2 p2 = Dance (r1 <> r2) (p1 <> p2)

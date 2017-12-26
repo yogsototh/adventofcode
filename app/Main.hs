@@ -27,7 +27,7 @@ import qualified Day16
 import qualified Day17
 import qualified Day18
 import qualified Day19
--- import qualified Day20
+import qualified Day20
 -- import qualified Day21
 -- import qualified Day22
 -- import qualified Day23
@@ -64,7 +64,7 @@ solutions = Map.fromList [(["01"], day01)
                          ,(["17"], day17)
                          ,(["18"], day18)
                          ,(["19"], day19)
-                         ,(["20"], dayXX)
+                         ,(["20"], day20)
                          ,(["21"], dayXX)
                          ,(["22"], dayXX)
                          ,(["23"], dayXX)
@@ -208,8 +208,8 @@ day16 = do
   input <- Day16.parseInput
   sol1 <- Day16.solution1 16 input
   showSol "Solution 1" (text (toS sol1))
-  -- sol2 <- Day16.solution2 16 input
-  -- showSol "Solution 2" (text (toS sol2))
+  let sol2 = Day16.solution2 16 1000000000 input
+  showSol "Solution 2" (text (toS sol2))
 
 day17 :: IO ()
 day17 = do
@@ -238,6 +238,15 @@ day19 = do
   let sol1 = Day19.solution1 input
   showSol "Solution 1" (text sol1)
   let sol2 = Day19.solution2 input
+  showSol "Solution 2" (int sol2)
+
+day20 :: IO ()
+day20 = do
+  putText "Day 20:"
+  input <- Day20.parseInput
+  let sol1 = Day20.solution1 input
+  showSol "Solution 1" (int sol1)
+  let sol2 = Day20.solution2 input
   showSol "Solution 2" (int sol2)
 
 dayXX :: IO ()
