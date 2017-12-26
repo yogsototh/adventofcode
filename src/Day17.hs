@@ -125,7 +125,7 @@ addElem roundNumber b@Buffer {..} =
                ++ drop (pos + 1) elems
 
 solution1 :: Int -> Int -> Maybe Int
-solution1 nbOcc nbSteps = finalState & elems & elemAt (1 + (pos finalState))
+solution1 nbOcc nbSteps = finalState & elems & elemAt (1 + pos finalState)
   where
     initState = Buffer [0] 0
     finalState = genState nbOcc nbSteps 0 initState

@@ -63,6 +63,7 @@ import           Control.Lens          hiding ((&))
 -- import           Data.Array
 import           Data.Generics.Product
 -- import qualified Data.Text             as T
+import           Data.List             (partition)
 import qualified Data.Set              as Set
 import           GHC.Generics
 import           Text.Parsec           hiding (State)
@@ -84,6 +85,7 @@ instance Num Coord where
 
 instance Monoid Coord where
   mempty = Coord 0 0 0
+  mappend c1 c2 = c1 + c2
 
 dist :: Coord -> Coord -> Int
 dist c1 c2 = let dv = abs (c1 - c2) in (x dv) + (y dv) + (z dv)
@@ -144,66 +146,88 @@ solution1 input =
 
 type Solution2 = Int
 
+testInput2 :: Text
+testInput2 = "p=<-6,0,0>, v=<3,0,0>, a=<0,0,0>\n\
+             \p=<-4,0,0>, v=<2,0,0>, a=<0,0,0>\n\
+             \p=<-2,0,0>, v=<1,0,0>, a=<0,0,0>\n\
+             \p=<3,0,0>, v=<-1,0,0>, a=<0,0,0>\n"
+
 solution2 :: Input -> Solution2
 solution2 input =
-  let sorted = input
-               & zip ([0..] :: [Int])
-               & sortOn (\(_,p)->d (pos p))
-               & sortOn (\(_,p)->d (vit p))
-               & sortOn (\(_,p)->d (acc p))
-  in notCollided sorted & map fst & Set.fromList & Set.size
+  input
+  & sortParticles
+  & notCollided
+  & length
+
+d :: Coord -> Int
+d = dist mempty
+
+sortParticles :: [Particle] -> [Particle]
+sortParticles ps =
+  ps
+  & sortOn (d . pos)
+  & sortOn (d . vit)
+  & sortOn (d . acc)
+
+notCollided :: [Particle] -> [Particle]
+notCollided (p:ps) =
+  let (deleted,nextList) = partition (collide p) ps in
+  if null deleted
+    then p:notCollided nextList
+    else notCollided nextList
+notCollided ps = ps
+
+collide :: Particle -> Particle -> Bool
+collide p1 p2 = let pr = potentialRacines p1 p2
+                in checkRacines p1 p2 pr
+
+potentialRacines :: Particle -> Particle -> [Int]
+potentialRacines p1 p2 = mconcat [ potentialRacinesOn (field @"x") p1 p2
+                                 , potentialRacinesOn (field @"y") p1 p2
+                                 , potentialRacinesOn (field @"z") p1 p2
+                                 ]
+
+potentialRacinesOn :: Lens' Coord Int -> Particle -> Particle -> [Int]
+potentialRacinesOn l p1 p2 =
+  let a = (acc p1 ^. l) - (acc p2 ^. l)
+      b = (vit p1 ^. l) - (vit p2 ^. l)
+      c = (pos p1 ^. l) - (pos p2 ^. l)
+  in
+    if a /= 0
+    then
+      let delta = b^2 - 4*a*c in
+      if delta >= 0
+      then [ (-b + isqrt delta) `div` (2*a)
+           , (-b - isqrt delta) `div` (2*a)
+           ] & filter (>0)
+      else []
+    else [-c `div` b | b /= 0]
+
+isqrt :: Int -> Int
+isqrt = fromIntegral . floor . sqrt . fromIntegral
+
+pol :: Particle -> Particle -> Lens' Coord Int -> (Int -> Int)
+pol p1 p2 l = \x -> a*(x*x) + (b*x) + c
   where
-    d = dist mempty
-    notCollided :: [(Int,Particle)] -> [(Int,Particle)]
-    notCollided sorted = do
-      (i,p1) <- sorted
-      (j,p2) <- sorted
-      guard (j > i)
-      guard (not (collide p1 p2))
-      return (i,p1)
-    collide :: Particle -> Particle -> Bool
-    collide p1 p2 = let trivialracines = [1..10]
-                    in checkRacines p1 p2 trivialracines
-    potentialRacines :: Particle -> Particle -> [Int]
-    potentialRacines p1 p2 =
-      let a = (acc p1 ^. field @"x") - (acc p2 ^. field @"x")
-          b = (vit p1 ^. field @"x") - (vit p2 ^. field @"x")
-          c = (pos p1 ^. field @"x") - (pos p2 ^. field @"x")
-      in
-        if a /= 0
-        then
-          let delta = b^2 - 4*a*c in
-          if delta >= 0
-          then [ (-b + isqrt delta) `div` (2*a)
-               , (-b - isqrt delta) `div` (2*a)
-               , 1+(-b - isqrt delta) `div` (2*a)
-               , 1+(-b + isqrt delta) `div` (2*a)
-               , 2+(-b - isqrt delta) `div` (2*a)
-               , 2+(-b + isqrt delta) `div` (2*a)
-               ] & filter (>0)
-          else []
-        else [-c `div` b | b /= 0]
-    isqrt :: Int -> Int
-    isqrt = fromIntegral . floor . sqrt . fromIntegral
-    pol :: Particle -> Particle -> Lens' Coord Int -> (Int -> Int)
-    pol p1 p2 l = \x -> a*(x*x) + (b*x) + c
-      where
-        a :: Int
-        a = (acc p1 ^. l) - (acc p2 ^. l)
-        b :: Int
-        b = (vit p1 ^. l) - (vit p2 ^. l)
-        c :: Int
-        c = (pos p1 ^. l) - (pos p2 ^. l)
-    checkRacines :: Particle -> Particle -> [Int] -> Bool
-    checkRacines _ _ [] = False
-    checkRacines p1 p2 (x:xs) =
-      traceShow (p1,p2,x
-                , pol p1 p2 (field @"x") x == 0
-                , pol p1 p2 (field @"y") x == 0
-                , pol p1 p2 (field @"z") x == 0)
-                (pol p1 p2 (field @"x") x == 0
-                 && pol p1 p2 (field @"y") x == 0
-                 && pol p1 p2 (field @"z") x == 0)
-      || checkRacines p1 p2 xs
-
-
+    a :: Int
+    a = (acc p1 ^. l) - (acc p2 ^. l)
+    b :: Int
+    b = (vit p1 ^. l) - (vit p2 ^. l)
+    c :: Int
+    c = (pos p1 ^. l) - (pos p2 ^. l)
+checkRacines :: Particle -> Particle -> [Int] -> Bool
+checkRacines _ _ [] = False
+checkRacines p1 p2 (t:ts) =
+    if (deepseq collided collided)
+    then -- traceShow ( t
+         --           , collided
+         --           , p1
+         --           , p2
+         --           , pol p1 (Particle 0 0 0) (field @"x") t
+         --           , pol p2 (Particle 0 0 0) (field @"x") t
+         --           ) $
+         collided
+     else checkRacines p1 p2 ts
+  where collided = pol p1 p2 (field @"x") t == 0
+                   && pol p1 p2 (field @"y") t == 0
+                   && pol p1 p2 (field @"z") t == 0
